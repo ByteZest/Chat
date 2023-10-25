@@ -30,6 +30,7 @@ let package = Package(
             url: "https://github.com/exyte/ActivityIndicatorView",
             from: "1.0.0"
         ),
+		.package(url: "https://github.com/SDWebImage/SDWebImageSwiftUI.git", from: "2.0.0"),
     ],
     targets: [
         .target(
@@ -38,7 +39,8 @@ let package = Package(
                 .product(name: "Introspect", package: "SwiftUI-Introspect"),
                 .product(name: "ExyteMediaPicker", package: "MediaPicker"),
                 .product(name: "FloatingButton", package: "FloatingButton"),
-                .product(name: "ActivityIndicatorView", package: "ActivityIndicatorView")
+                .product(name: "ActivityIndicatorView", package: "ActivityIndicatorView"),
+				.product(name: "SDWebImageSwiftUI", package: "SDWebImageSwiftUI")
             ]
         ),
         .testTarget(

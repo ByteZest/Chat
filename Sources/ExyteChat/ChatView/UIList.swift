@@ -68,103 +68,20 @@ struct UIList<MessageContent: View>: UIViewRepresentable {
 
         return tableView
     }
-
-    func updateUIView(_ tableView: UITableView, context: Context) {
-        if context.coordinator.sections == sections {
-            return
-        }
-        updatesQueue.async {
-            updateSemaphore.wait()
-
-            if context.coordinator.sections == sections {
-                updateSemaphore.signal()
-                return
-            }
-
-            let prevSections = context.coordinator.sections
-            let (appliedDeletes, appliedDeletesSwapsAndEdits, deleteOperations, swapOperations, editOperations, insertOperations) = operationsSplit(oldSections: prevSections, newSections: sections)
-
-            // step 1
-            // preapare intermediate sections and operations
-            //print("1 updateUIView sections:", "\n")
-            //print("whole previous:\n", formatSections(prevSections), "\n")
-            //print("whole appliedDeletes:\n", formatSections(appliedDeletes), "\n")
-            //print("whole appliedDeletesSwapsAndEdits:\n", formatSections(appliedDeletesSwapsAndEdits), "\n")
-            //print("whole final sections:\n", formatSections(sections), "\n")
-
-            //print("operations delete:\n", deleteOperations)
-            //print("operations swap:\n", swapOperations)
-            //print("operations edit:\n", editOperations)
-            //print("operations insert:\n", insertOperations)
-
-            DispatchQueue.main.async {
-                tableView.performBatchUpdates {
-                    // step 2
-                    // delete sections and rows if necessary
-                    //print("2 apply delete")
-                    context.coordinator.sections = appliedDeletes
-                    for operation in deleteOperations {
-                        applyOperation(operation, tableView: tableView)
-                    }
-                } completion: { _ in
-                    tableSemaphore.signal()
-                }
-            }
-            tableSemaphore.wait()
-
-            DispatchQueue.main.async {
-                tableView.performBatchUpdates {
-                    // step 3
-                    // swap places for rows that moved inside the table
-                    // (example of how this happens. send two messages: first m1, then m2. if m2 is delivered to server faster, then it should jump above m1 even though it was sent later)
-                    //print("3 apply swaps")
-                    context.coordinator.sections = appliedDeletesSwapsAndEdits // NOTE: this array already contains necessary edits, but won't be a problem for appplying swaps
-                    for operation in swapOperations {
-                        applyOperation(operation, tableView: tableView)
-                    }
-                } completion: { _ in
-                    tableSemaphore.signal()
-                }
-            }
-            tableSemaphore.wait()
-
-            DispatchQueue.main.async {
-                tableView.performBatchUpdates {
-                    // step 4
-                    // check only sections that are already in the table for existing rows that changed and apply only them to table's dataSource without animation
-                    //print("4 apply edits")
-                    context.coordinator.sections = appliedDeletesSwapsAndEdits
-                    for operation in editOperations {
-                        applyOperation(operation, tableView: tableView)
-                    }
-                } completion: { _ in
-                    tableSemaphore.signal()
-                }
-            }
-            tableSemaphore.wait()
-
-            if isScrolledToBottom || isScrolledToTop {
-                DispatchQueue.main.sync {
-                    // step 5
-                    // apply the rest of the changes to table's dataSource, i.e. inserts
-                    //print("5 apply inserts")
-                    context.coordinator.sections = sections
-                    context.coordinator.ids = ids
-
-                    tableView.beginUpdates()
-                    for operation in insertOperations {
-                        applyOperation(operation, tableView: tableView)
-                    }
-                    tableView.endUpdates()
-
-                    updateSemaphore.signal()
-                }
-            } else {
-                context.coordinator.ids = ids
-                updateSemaphore.signal()
-            }
-        }
-    }
+	
+	func updateUIView(_ tableView: UITableView, context: Context) {
+		// Check if there is a change in the data
+		if context.coordinator.sections != sections || context.coordinator.ids != ids {
+			// Update the sections and ids as needed
+			context.coordinator.sections = sections
+			context.coordinator.ids = ids
+			
+			// Reload the entire table view
+			DispatchQueue.main.async {
+				tableView.reloadData()
+			}
+		}
+	}
 
     // MARK: - Operations
 

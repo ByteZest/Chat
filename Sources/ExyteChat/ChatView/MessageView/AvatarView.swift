@@ -3,23 +3,20 @@
 //
 
 import SwiftUI
+import SDWebImageSwiftUI
 
 struct AvatarView: View {
 
     let url: URL?
     let avatarSize: CGFloat
-
-    var body: some View {
-        CachedAsyncImage(url: url, urlCache: .imageCache) { image in
-            image
-                .resizable()
-                .scaledToFill()
-        } placeholder: {
-            Rectangle().fill(Color.gray)
-        }
-        .viewSize(avatarSize)
-        .clipShape(Circle())
-    }
+	
+	var body: some View {
+		WebImage(url: url)
+			.resizable()
+			.scaledToFill()
+			.viewSize(avatarSize)
+			.clipShape(Circle())
+	}
 }
 
 struct AvatarView_Previews: PreviewProvider {

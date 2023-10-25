@@ -106,7 +106,7 @@ struct InputView: View {
                     rightView
                 }
                 .background {
-                    RoundedRectangle(cornerRadius: 18)
+                    RoundedRectangle(cornerRadius: 10)
                         .fill(fieldBackgroundColor)
                 }
 
@@ -231,7 +231,7 @@ struct InputView: View {
                             textView(message.text)
                                 .font(.caption2)
                                 .lineLimit(1)
-                                .foregroundColor(theme.colors.textLightContext)
+								.foregroundColor(Color.gray800)
                         }
                     }
                     .padding(.vertical, 2)
@@ -308,8 +308,13 @@ struct InputView: View {
             onAction(.send)
         } label: {
             theme.images.inputView.arrowSend
-                .viewSize(48)
-                .circleBackground(theme.colors.sendButtonBackground)
+				.renderingMode(.template)
+				.resizable()
+				.scaledToFit()
+				.frame(width: 28, height: 28)
+				.foregroundColor(Color.gray900)
+				.viewSize(48)
+				.circleBackground(Color.blue)
         }
     }
 
@@ -423,6 +428,8 @@ struct InputView: View {
             onAction(.playRecord)
         } label: {
             theme.images.recordAudio.playRecord
+				.renderingMode(.template)
+				.foregroundColor(theme.colors.textLightContext)
         }
     }
 
@@ -431,6 +438,8 @@ struct InputView: View {
             onAction(.pauseRecord)
         } label: {
             theme.images.recordAudio.pauseRecord
+				.renderingMode(.template)
+				.foregroundColor(theme.colors.textLightContext)
         }
     }
 
@@ -454,12 +463,7 @@ struct InputView: View {
     }
 
     var fieldBackgroundColor: Color {
-        switch style {
-        case .message:
-            return theme.colors.inputLightContextBackground
-        case .signature:
-            return theme.colors.inputDarkContextBackground
-        }
+		Color.gray400
     }
 
     var backgroundColor: Color {

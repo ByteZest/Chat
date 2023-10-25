@@ -6,7 +6,8 @@
 //
 
 import SwiftUI
-import CachedAsyncImage
+import SDWebImageSwiftUI
+
 
 struct AvatarView: View {
     let url: URL?
@@ -14,16 +15,15 @@ struct AvatarView: View {
 
     var body: some View {
         if let url {
-            CachedAsyncImage(url: url, urlCache: .imageCache) { image in
-                image
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-            } placeholder: {
-                Image(.placeholderAvatar)
-                    .resizable()
-            }
-            .frame(width: size, height: size)
-            .clipShape(Circle())
+			WebImage(url: url)
+				.resizable()
+				.placeholder {
+					Image(.placeholderAvatar)
+						.resizable()
+				}
+				.aspectRatio(contentMode: .fill)
+				.frame(width: size, height: size)
+				.clipShape(Circle())
         } else {
             Image(.placeholderAvatar)
                 .resizable()

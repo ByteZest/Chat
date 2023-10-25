@@ -3,6 +3,7 @@
 //
 
 import SwiftUI
+import SDWebImageSwiftUI
 
 struct AttachmentCell: View {
 
@@ -45,19 +46,18 @@ struct AsyncImageView: View {
 
     @Environment(\.chatTheme) var theme
     let url: URL
-
-    var body: some View {
-        CachedAsyncImage(url: url, urlCache: .imageCache) { imageView in
-            imageView
-                .resizable()
-                .scaledToFill()
-        } placeholder: {
-            ZStack {
-                Rectangle()
-                    .foregroundColor(theme.colors.inputLightContextBackground)
-                    .frame(minWidth: 100, minHeight: 100)
-                ActivityIndicator(size: 30, showBackground: false)
-            }
-        }
-    }
+	
+	var body: some View {
+		WebImage(url: url)
+			.resizable()
+			.placeholder {
+				ZStack {
+					Rectangle()
+						.foregroundColor(theme.colors.inputLightContextBackground)
+						.frame(minWidth: 100, minHeight: 100)
+					//ActivityIndicator(size: 30, showBackground: false)
+				}
+			}
+			.scaledToFill()
+	}
 }

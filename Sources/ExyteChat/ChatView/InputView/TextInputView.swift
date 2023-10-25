@@ -21,7 +21,7 @@ struct TextInputView: View {
                 Text(style.placeholder)
                     .foregroundColor(theme.colors.buttonBackground)
             }
-            .foregroundColor(style == .message ? theme.colors.textLightContext : theme.colors.textDarkContext)
+			.foregroundColor(Color.gray900)
             .padding(.vertical, 10)
             .onTapGesture {
                 globalFocusState.focus = .uuid(inputFieldId)

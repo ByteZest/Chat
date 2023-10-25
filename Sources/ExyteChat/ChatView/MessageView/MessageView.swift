@@ -267,7 +267,7 @@ extension View {
         let additionalMediaInset: CGFloat = message.attachments.count > 1 ? 2 : 0
         self
             .frame(width: message.attachments.isEmpty ? nil : MessageView.widthWithMedia + additionalMediaInset)
-            .foregroundColor(message.user.isCurrentUser ? theme.colors.textDarkContext : theme.colors.textLightContext)
+			.foregroundColor(message.user.isCurrentUser ? .white : Color.gray800)
             .background {
                 if isReply || !message.text.isEmpty || message.recording != nil {
                     RoundedRectangle(cornerRadius: radius)

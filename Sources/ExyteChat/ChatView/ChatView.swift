@@ -199,41 +199,41 @@ public struct ChatView<MessageContent: View, InputViewContent: View>: View {
         .onStatusBarTap {
             shouldScrollToTop()
         }
-        .transparentNonAnimatingFullScreenCover(item: $viewModel.messageMenuRow) {
-            if let row = viewModel.messageMenuRow {
-                ZStack(alignment: .topLeading) {
-                    Color.white
-                        .opacity(menuBgOpacity)
-                        .ignoresSafeArea(.all)
+		.transparentNonAnimatingFullScreenCover(item: $viewModel.messageMenuRow) {
+			if let row = viewModel.messageMenuRow {
+				ZStack(alignment: .topLeading) {
+					Color.gray100
+						.opacity(menuBgOpacity)
+						.ignoresSafeArea(.all)
 
-                    if needsScrollView {
-                        ScrollView {
-                            messageMenu(row)
-                        }
-                        .introspectScrollView { scrollView in
-                            DispatchQueue.main.async {
-                                self.menuScrollView = scrollView
-                            }
-                        }
-                        .opacity(readyToShowScrollView ? 1 : 0)
-                    }
-                    if !needsScrollView || !readyToShowScrollView {
-                        messageMenu(row)
-                            .position(menuCellPosition)
-                    }
-                }
-                .onAppear {
-                    DispatchQueue.main.async {
-                        if let frame = cellFrames[row.id] {
-                            showMessageMenu(frame)
-                        }
-                    }
-                }
-                .onTapGesture {
-                    hideMessageMenu()
-                }
-            }
-        }
+					if needsScrollView {
+						ScrollView {
+							messageMenu(row)
+						}
+						.introspectScrollView { scrollView in
+							DispatchQueue.main.async {
+								self.menuScrollView = scrollView
+							}
+						}
+						.opacity(readyToShowScrollView ? 1 : 0)
+					}
+					if !needsScrollView || !readyToShowScrollView {
+						messageMenu(row)
+							.position(menuCellPosition)
+					}
+				}
+				.onAppear {
+					DispatchQueue.main.async {
+						if let frame = cellFrames[row.id] {
+							showMessageMenu(frame)
+						}
+					}
+				}
+				.onTapGesture {
+					hideMessageMenu()
+				}
+			}
+		}
         .onPreferenceChange(MessageMenuPreferenceKey.self) {
             self.cellFrames = $0
         }

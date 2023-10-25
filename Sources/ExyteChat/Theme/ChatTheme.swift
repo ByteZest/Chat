@@ -241,7 +241,7 @@ public struct ChatTheme {
 
             self.inputView = InputView(
                 add: add ?? Image("add", bundle: .current),
-                arrowSend: arrowSend ?? Image("arrowSend", bundle: .current),
+                arrowSend: arrowSend ?? Image("bull", bundle: .current),
                 attach: attach ?? Image("attach", bundle: .current),
                 attachCamera: attachCamera ?? Image("attachCamera", bundle: .current),
                 microphone: microphone ?? Image("microphone", bundle: .current)

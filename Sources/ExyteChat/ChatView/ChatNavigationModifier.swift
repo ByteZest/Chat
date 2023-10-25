@@ -6,6 +6,8 @@
 //
 
 import SwiftUI
+import SDWebImageSwiftUI
+
 
 struct ChatNavigationModifier: ViewModifier {
 
@@ -18,9 +20,8 @@ struct ChatNavigationModifier: ViewModifier {
     
     func body(content: Content) -> some View {
         content
-            .navigationBarBackButtonHidden()
             .toolbar {
-                backButton
+                //backButton
                 infoToolbarItem
             }
     }
@@ -37,25 +38,21 @@ struct ChatNavigationModifier: ViewModifier {
         ToolbarItem(placement: .principal) {
             HStack {
                 if let url = cover {
-                    CachedAsyncImage(url: url, urlCache: .imageCache) { phase in
-                        switch phase {
-                        case .success(let image):
-                            image
-                                .resizable()
-                                .scaledToFill()
-                        default:
-                            Rectangle().fill(theme.colors.grayStatus)
-                        }
-                    }
-                    .frame(width: 35, height: 35)
-                    .clipShape(Circle())
+					WebImage(url: url)
+						.resizable()
+						.placeholder {
+							Rectangle().fill(theme.colors.grayStatus)
+						}
+						.scaledToFill()
+						.frame(width: 35, height: 35)
+						.clipShape(Circle())
                 }
                 
                 VStack(alignment: .leading, spacing: 0) {
                     Text(title)
                         .fontWeight(.semibold)
                         .font(.headline)
-                        .foregroundColor(theme.colors.textLightContext)
+						.foregroundColor(Color.gray800)
                     if let status = status {
                         Text(status)
                             .font(.footnote)

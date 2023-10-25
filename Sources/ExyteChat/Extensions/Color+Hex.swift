@@ -5,6 +5,22 @@
 import SwiftUI
 
 extension Color {
+	static let gray100 = Color("Grayscale100")
+	static let gray200 = Color("Grayscale200")
+	static let gray300 = Color("Grayscale300")
+	static let gray400 = Color("Grayscale400")
+	static let gray500 = Color("Grayscale500")
+	static let gray600 = Color("Grayscale600")
+	static let gray700 = Color("Grayscale700")
+	static let gray800 = Color("Grayscale800")
+	static let gray900 = Color("Grayscale900")
+	static let red500 = Color("Red500")
+	static let green200 = Color("Green200")
+	static let green300 = Color("Green300")
+	static let green400 = Color("Green400")
+	static let green500 = Color("Green500")
+	static let green600 = Color("Green600")
+	
     public init(hex: String) {
         let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
         var int: UInt64 = 0

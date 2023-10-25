@@ -3,6 +3,8 @@
 //
 
 import SwiftUI
+import SDWebImageSwiftUI
+
 
 struct AttachmentsPage: View {
 
@@ -13,17 +15,11 @@ struct AttachmentsPage: View {
 
     var body: some View {
         if attachment.type == .image {
-            CachedAsyncImage(url: attachment.full, urlCache: .imageCache) { phase in
-                switch phase {
-                case let .success(image):
-                    image
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                default:
-                    ActivityIndicator()
-                }
-            }
-        } else if attachment.type == .video {
+			WebImage(url: attachment.full)
+				.resizable()
+				.indicator(.activity)
+				.aspectRatio(contentMode: .fit)
+		} else if attachment.type == .video {
             VideoView(viewModel: VideoViewModel(attachment: attachment))
         } else {
             Rectangle()
