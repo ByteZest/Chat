@@ -32,6 +32,7 @@ public struct ChatView<MessageContent: View, InputViewContent: View>: View {
 
     /// User and MessageId
     public typealias TapAvatarClosure = (User, String) -> ()
+	public typealias OnTyping = (InputViewAttachments) -> ()
 
     @Environment(\.safeAreaInsets) private var safeAreaInsets
     @Environment(\.chatTheme) private var theme
@@ -40,7 +41,7 @@ public struct ChatView<MessageContent: View, InputViewContent: View>: View {
     // MARK: - Parameters
 
     let didSendMessage: (DraftMessage) -> Void
-
+	
     // MARK: - View builders
 
     /// provide custom message view builder
@@ -54,6 +55,7 @@ public struct ChatView<MessageContent: View, InputViewContent: View>: View {
     var avatarSize: CGFloat = 32
     var messageUseMarkdown: Bool = false
     var tapAvatarClosure: TapAvatarClosure?
+	var onTypingClosure: OnTyping?
     var mediaPickerSelectionParameters: MediaPickerParameters?
     var orientationHandler: MediaPickerOrientationHandler = {_ in}
     var chatTitle: String?
@@ -241,6 +243,7 @@ public struct ChatView<MessageContent: View, InputViewContent: View>: View {
             globalFocusState.focus = nil
         }
         .onAppear {
+			inputViewModel.onTypingClosure = onTypingClosure
             viewModel.didSendMessage = didSendMessage
             inputViewModel.didSendMessage = { value in
                 didSendMessage(value)
@@ -391,6 +394,12 @@ public extension ChatView {
         view.tapAvatarClosure = closure
         return view
     }
+	
+	func onTypingClosure(_ closure: @escaping OnTyping) -> ChatView {
+		var view = self
+		view.onTypingClosure = closure
+		return view
+	}
 
     func assetsPickerLimit(assetsPickerLimit: Int) -> ChatView {
         var view = self
@@ -429,7 +438,8 @@ public extension ChatView where MessageContent == EmptyView {
 
     init(messages: [Message],
          didSendMessage: @escaping (DraftMessage) -> Void,
-         inputViewBuilder: @escaping InputViewBuilderClosure) {
+         inputViewBuilder: @escaping InputViewBuilderClosure
+	) {
         self.didSendMessage = didSendMessage
         self.sections = ChatView.mapMessages(messages)
         self.ids = messages.map { $0.id }
@@ -441,18 +451,21 @@ public extension ChatView where InputViewContent == EmptyView {
 
     init(messages: [Message],
          didSendMessage: @escaping (DraftMessage) -> Void,
-         messageBuilder: @escaping MessageBuilderClosure) {
+         messageBuilder: @escaping MessageBuilderClosure
+	) {
         self.didSendMessage = didSendMessage
         self.sections = ChatView.mapMessages(messages)
         self.ids = messages.map { $0.id }
         self.messageBuilder = messageBuilder
+	
     }
 }
 
 public extension ChatView where MessageContent == EmptyView, InputViewContent == EmptyView {
 
     init(messages: [Message],
-         didSendMessage: @escaping (DraftMessage) -> Void) {
+         didSendMessage: @escaping (DraftMessage) -> Void
+	) {
         self.didSendMessage = didSendMessage
         self.sections = ChatView.mapMessages(messages)
         self.ids = messages.map { $0.id }

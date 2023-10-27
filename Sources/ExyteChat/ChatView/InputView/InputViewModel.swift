@@ -8,14 +8,15 @@ import ExyteMediaPicker
 
 final class InputViewModel: ObservableObject {
     
-    @Published var attachments = InputViewAttachments()
+	@Published var attachments = InputViewAttachments()
     @Published var state: InputViewState = .empty
 
     @Published var showPicker = false
     @Published var mediaPickerMode = MediaPickerMode.photos
 
     @Published var showActivityIndicator = false
-
+	
+	var onTypingClosure: ((InputViewAttachments) -> Void)?
     var recordingPlayer: RecordingPlayer?
     var didSendMessage: ((DraftMessage) -> Void)?
 
@@ -27,6 +28,7 @@ final class InputViewModel: ObservableObject {
     func onStart() {
         subscribeValidation()
         subscribePicker()
+		subscribeTyping()
     }
 
     func onStop() {
@@ -118,6 +120,15 @@ final class InputViewModel: ObservableObject {
 
 private extension InputViewModel {
 
+	func subscribeTyping() {
+		$attachments.sink { [weak self] att in
+			if let closure = self?.onTypingClosure {
+				closure(att)
+			}
+		}
+		.store(in: &subscriptions)
+	}
+	
     func validateDraft() {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
