@@ -20,4 +20,8 @@ extension FileManager {
     static var tempAudioFile: URL {
         FileManager.tempDirPath.appendingPathComponent(UUID().uuidString + ".aac")
     }
+	
+	static var tempVideoFile: URL {
+		FileManager.tempDirPath.appendingPathComponent(UUID().uuidString + ".mov")
+	}
 }

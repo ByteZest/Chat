@@ -5,6 +5,7 @@
 import Foundation
 import Combine
 import ExyteMediaPicker
+import AVFoundation
 
 final class InputViewModel: ObservableObject {
     
@@ -197,12 +198,35 @@ private extension InputViewModel {
             .collect()
             .eraseToAnyPublisher()
     }
+	
+	func patchVideo(url: URL) async -> URL? {
+		let tempUrl = FileManager.tempVideoFile
+		let avAsset = AVAsset(url: url)
+		
+		guard await AVAssetExportSession
+			.compatibility(ofExportPreset: AVAssetExportPresetHighestQuality, with: avAsset, outputFileType: .mov) else {
+			print("The present can't export the videou to the output")
+			return nil
+		}
+		
+		guard let exportSession = AVAssetExportSession(asset: avAsset, presetName: AVAssetExportPresetHighestQuality) else {
+			print("Failed to create export session.")
+			return nil
+		}
+		
+		exportSession.outputFileType = .mov
+		exportSession.outputURL = tempUrl
+		
+		await exportSession.export()
+		
+		return tempUrl
+	}
 
     func sendMessage() -> AnyCancellable {
         showActivityIndicator = true
         return mapAttachmentsForSend()
             .compactMap { [attachments] _ in
-                DraftMessage(
+                return DraftMessage(
                     text: attachments.text,
                     medias: attachments.medias,
                     recording: attachments.recording,

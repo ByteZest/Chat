@@ -42,11 +42,11 @@ struct RecordWaveformWithButtons: View {
             }
             
             VStack(alignment: .leading, spacing: 5) {
-                RecordWaveformPlaying(samples: recording.waveformSamples, progress: recordPlayer.progress, color: colorWaveform, addExtraDots: false)
+                //RecordWaveformPlaying(samples: recording.waveformSamples, progress: recordPlayer.progress, color: colorWaveform, addExtraDots: false)
                 Text(DateFormatter.timeString(duration))
                     .font(.caption2)
                     .monospacedDigit()
-                    .foregroundColor(colorWaveform)
+					.foregroundColor(Color.gray700)
             }
         }
     }
