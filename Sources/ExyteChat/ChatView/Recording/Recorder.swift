@@ -7,6 +7,7 @@
 
 import Foundation
 import AVFoundation
+import UIKit
 
 final class Recorder {
 
@@ -51,6 +52,11 @@ final class Recorder {
         let recordingUrl = FileManager.tempAudioFile
 
         do {
+			Task {
+				await MainActor.run {
+					UIApplication.shared.isIdleTimerDisabled = true
+				}
+			}
             try audioSession.setCategory(.record, mode: .default)
             try audioSession.setActive(true)
             audioRecorder = try AVAudioRecorder(url: recordingUrl, settings: settings)
@@ -88,6 +94,11 @@ final class Recorder {
         audioRecorder = nil
         audioTimer?.invalidate()
         audioTimer = nil
+		Task {
+			await MainActor.run {
+				UIApplication.shared.isIdleTimerDisabled = false
+			}
+		}
     }
 }
 

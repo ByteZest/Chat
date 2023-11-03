@@ -7,6 +7,7 @@
 
 import Combine
 import AVFoundation
+import UIKit
 
 final class RecordingPlayer: ObservableObject {
 
@@ -40,6 +41,11 @@ final class RecordingPlayer: ObservableObject {
     func pause() {
         player?.pause()
         playing = false
+		Task {
+			await MainActor.run {
+				UIApplication.shared.isIdleTimerDisabled = false
+			}
+		}
     }
 
     func togglePlay(_ recording: Recording) {
@@ -71,6 +77,11 @@ final class RecordingPlayer: ObservableObject {
         try? audioSession.setActive(true)
         player?.play()
         playing = true
+		Task {
+			await MainActor.run {
+				UIApplication.shared.isIdleTimerDisabled = true
+			}
+		}
     }
 
     private func setupPlayer(for url: URL, trackDuration: Double) {
@@ -92,6 +103,11 @@ final class RecordingPlayer: ObservableObject {
             self?.playing = false
             self?.player?.seek(to: .zero)
             self?.didPlayTillEnd.send()
+			Task {
+				await MainActor.run {
+					UIApplication.shared.isIdleTimerDisabled = false
+				}
+			}
         }
 
         timeObserver = player?.addPeriodicTimeObserver(
